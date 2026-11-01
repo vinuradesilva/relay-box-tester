@@ -1,0 +1,37 @@
+name: Relay Box Tester CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-firmware:
+    # Routes this job specifically to your Raspberry Pi
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Environment
+        # Builds the image on the Pi. It caches layers, so future runs take seconds.
+        run: docker build -t stm32-env .
+
+      - name: Compile STM32 Firmware
+        # Spins up the container, maps the checked-out code to /workspace, and runs make
+        # Note: This assumes you have a Makefile inside your 'firmware' folder!
+        run: >
+          docker run --rm 
+          -v ${{ github.workspace }}:/workspace 
+          -w /workspace/firmware 
+          stm32-env make
+
+      - name: Upload Binary Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stm32-firmware
+          # Adjust this path if your Makefile outputs to a different directory (e.g., build/Debug/)
+          path: firmware/build/*.elf
+          retention-days: 5
