@@ -4,7 +4,7 @@ FROM ubuntu:24.04
 # Prevent tzdata and other interactive prompts from halting the build
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install the standard gcc (for future SIL tests) and arm-none-eabi (for STM32)
+# Install STM32 toolchain, standard gcc, and Ruby
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc-arm-none-eabi \
@@ -12,7 +12,12 @@ RUN apt-get update && apt-get install -y \
     make \
     cmake \
     git \
+    ruby \
+    ruby-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Install the Ceedling framework
+RUN gem install ceedling
 
 # Set default working directory
 WORKDIR /workspace
