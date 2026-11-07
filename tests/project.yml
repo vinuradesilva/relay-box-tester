@@ -1,7 +1,6 @@
 :project:
   :build_root: build
   :use_exceptions: FALSE
-  :use_test_preprocessor: none
   :use_auxiliary_dependencies: TRUE
   :test_file_prefix: test_
 :paths:
