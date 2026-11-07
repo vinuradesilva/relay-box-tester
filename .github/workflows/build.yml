@@ -8,7 +8,6 @@ on:
 
 jobs:
   build-firmware:
-    # Routes this job specifically to your Raspberry Pi
     runs-on: self-hosted
 
     steps:
@@ -16,12 +15,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker Environment
-        # Builds the image on the Pi. It caches layers, so future runs take seconds.
         run: docker build -t stm32-env .
 
+      - name: Run SIL Tests
+        # Executes Ceedling using the standard gcc toolchain inside the container
+        run: >
+          docker run --rm 
+          -v ${{ github.workspace }}:/workspace 
+          -w /workspace/tests 
+          stm32-env ceedling test:all
+
       - name: Compile STM32 Firmware
-        # Spins up the container, maps the checked-out code to /workspace, and runs make
-        # Note: This assumes you have a Makefile inside your 'firmware' folder!
         run: >
           docker run --rm 
           -v ${{ github.workspace }}:/workspace 
@@ -32,6 +36,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: stm32-firmware
-          # Adjust this path if your Makefile outputs to a different directory (e.g., build/Debug/)
           path: firmware/build/*.elf
           retention-days: 5
