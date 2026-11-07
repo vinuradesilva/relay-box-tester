@@ -3,8 +3,11 @@
   :use_exceptions: FALSE
   :use_auxiliary_dependencies: TRUE
   :test_file_prefix: test_
+
 :paths:
   :test:
     - +:test/**
   :source:
+    - src/**
+  :include:
     - src/**
