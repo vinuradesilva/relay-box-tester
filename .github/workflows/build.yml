@@ -18,9 +18,9 @@ jobs:
         run: docker build -t stm32-env .
 
       - name: Run SIL Tests
-        # Executes Ceedling using the standard gcc toolchain inside the container
         run: >
           docker run --rm 
+          --user $(id -u):$(id -g)
           -v ${{ github.workspace }}:/workspace 
           -w /workspace/tests 
           stm32-env ceedling test:all
@@ -28,6 +28,7 @@ jobs:
       - name: Compile STM32 Firmware
         run: >
           docker run --rm 
+          --user $(id -u):$(id -g)
           -v ${{ github.workspace }}:/workspace 
           -w /workspace/firmware 
           stm32-env make
