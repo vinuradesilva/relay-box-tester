@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install the Ceedling framework
-RUN gem install ceedling
+RUN gem install ceedling --no-document
 
 # Set default working directory
 WORKDIR /workspace
